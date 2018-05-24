@@ -21,6 +21,17 @@ public class AnagramChecker {
         if ((frequencies1.size() != frequencies2.size())) {
             return false;
         }
-        return frequencies1.entrySet().stream().noneMatch(entry -> !frequencies2.containsKey(entry.getKey()) || !(frequencies2.get(entry.getKey()).equals(entry.getValue())));
+        return frequencies1
+                .entrySet()
+                .stream()
+                .noneMatch(entry -> notContainsThatLetter(frequencies2, entry.getKey())|| hasNotSameFrequency(frequencies2, entry.getKey(), entry.getValue()));
+    }
+
+    private static boolean notContainsThatLetter(Map<Character, Long> letterFrequencies, Character letter) {
+        return !letterFrequencies.containsKey(letter);
+    }
+
+    private static boolean hasNotSameFrequency(Map<Character, Long> letterFrequencies, Character letter, Long frequency) {
+        return !letterFrequencies.get(letter).equals(frequency);
     }
 }

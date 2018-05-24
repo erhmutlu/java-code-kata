@@ -5,14 +5,14 @@ import java.util.Map;
 
 public class AnagramChecker {
 
-    public static boolean isAnagram(String a, String b) {
-        Map<Character, Integer> letterFrequenciesForFirst = findFrequencies(a.toLowerCase());
-        Map<Character, Integer> letterFrequenciesForSecond = findFrequencies(b.toLowerCase());
+    public static boolean isAnagram(String word1, String word2) {
+        Map<Character, Integer> letterFrequenciesForFirst = findLetterFrequencies(word1.toLowerCase());
+        Map<Character, Integer> letterFrequenciesForSecond = findLetterFrequencies(word2.toLowerCase());
 
         return hasSameFrequencies(letterFrequenciesForFirst, letterFrequenciesForSecond);
     }
 
-    private static Map<Character, Integer> findFrequencies(String word) {
+    private static Map<Character, Integer> findLetterFrequencies(String word) {
         Map<Character, Integer> frequencies = new HashMap<>();
         for (char letter : word.toCharArray()) {
             if (frequencies.containsKey(letter)) {
@@ -32,7 +32,7 @@ public class AnagramChecker {
 
         boolean notFound = false;
         for (Map.Entry<Character, Integer> entry : letterFrequencies1.entrySet()) {
-            if (hasNotThatLetter(letterFrequencies2, entry.getKey())
+            if (notContainsThatLetter(letterFrequencies2, entry.getKey())
                     || hasNotSameFrequency(letterFrequencies2, entry.getKey(), entry.getValue())) {
                 notFound = true;
                 break;
@@ -41,11 +41,12 @@ public class AnagramChecker {
         return !notFound;
     }
 
+    private static boolean notContainsThatLetter(Map<Character, Integer> letterFrequencies, Character letter) {
+        return !letterFrequencies.containsKey(letter);
+    }
+
     private static boolean hasNotSameFrequency(Map<Character, Integer> letterFrequencies, Character letter, Integer frequency) {
         return !letterFrequencies.get(letter).equals(frequency);
     }
 
-    private static boolean hasNotThatLetter(Map<Character, Integer> letterFrequencies, Character letter) {
-        return !letterFrequencies.containsKey(letter);
-    }
 }
