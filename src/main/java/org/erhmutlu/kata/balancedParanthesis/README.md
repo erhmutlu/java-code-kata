@@ -3,13 +3,13 @@ Examples of some correctly balanced strings are: "{}()", "[{()}]", "({()})"
 Examples of some unbalanced strings are: "{}(", "({)}", "[[", "}{" etc.
 Given a string, determine if it is balanced or not.
 
-Sample Input
+#### Sample Input
 {}()
 ({()})
 {}(
 []
 
-Sample Output
+#### Sample Output
 true
 true
 false
