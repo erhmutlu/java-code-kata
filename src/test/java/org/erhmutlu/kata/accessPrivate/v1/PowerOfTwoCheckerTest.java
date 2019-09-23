@@ -1,5 +1,6 @@
 package org.erhmutlu.kata.accessPrivate.v1;
 
+import org.erhmutlu.kata.PowerOfTwoChecker;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

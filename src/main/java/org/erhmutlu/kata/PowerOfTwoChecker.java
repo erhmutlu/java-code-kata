@@ -1,4 +1,4 @@
-package org.erhmutlu.kata.accessPrivate.v1;
+package org.erhmutlu.kata;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

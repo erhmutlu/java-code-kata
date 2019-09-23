@@ -1,4 +1,4 @@
-package org.erhmutlu.kata.balancedParanthesis.v1;
+package org.erhmutlu.kata.paranthesis.v1;
 
 import org.junit.Test;
 
