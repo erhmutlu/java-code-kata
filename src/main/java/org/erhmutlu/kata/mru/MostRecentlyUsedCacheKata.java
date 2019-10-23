@@ -17,7 +17,6 @@ public class MostRecentlyUsedCacheKata {
         myCache.put("6", "6");
         System.out.println(myCache.size());
     }
-
     static class MyCache extends LinkedHashMap<String, String> {
 
         private static final int MAX_ENTRIES = 5;
