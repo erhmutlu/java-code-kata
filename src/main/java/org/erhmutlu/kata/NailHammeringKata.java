@@ -1,58 +1,47 @@
 package org.erhmutlu.kata;
 
-import java.util.*;
-import java.util.function.Function;
-
-import static java.util.stream.Collectors.groupingBy;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class NailHammeringKata {
 
     public int solution(int[] nailSizes, int maxHammeringCount) {
-        Map<Integer, List<Integer>> mappedByLength = Arrays.stream(nailSizes)
-                .boxed()
-                .collect(groupingBy(Function.identity()));
+        Map<Integer, Integer> lengthAndCountMapping = prepareLengthAndCountMapping(nailSizes);
+        List<NailLengthAndCount> nailLengthAndCountsByLengthDesc = sortedByLengthDesc(lengthAndCountMapping);
 
-        TreeSet<NailLengthAndCount> treeSetByCount = prepareTreeSetByCountDesc(mappedByLength);
-        TreeSet<NailLengthAndCount> treeSetByLength = prepareTreeSetByLengthDesc(mappedByLength);
-
+        int longerNailsCount = 0;
         int result = -1;
-        for (NailLengthAndCount nailLengthAndCount : treeSetByCount) {
-            SortedSet<NailLengthAndCount> longerNailsLengthAndCounts = treeSetByLength.headSet(nailLengthAndCount);
-            int hammeringCount = 0;
+        for (NailLengthAndCount nailLengthAndCount : nailLengthAndCountsByLengthDesc) {
+            int longerSelectableNailsCount = Math.min(maxHammeringCount, longerNailsCount);
 
-            for (NailLengthAndCount longerNailsLengthAndCount : longerNailsLengthAndCounts) {
-                int remainingPossibleHammeringCount = maxHammeringCount - hammeringCount;
-                if (remainingPossibleHammeringCount == 0) {
-                    break;
-                }
-                int cnt = Math.min(longerNailsLengthAndCount.getCount(), remainingPossibleHammeringCount);
-                hammeringCount += cnt;
-            }
+            int newPossibleCountWithCurrentLength = nailLengthAndCount.getCount() + longerSelectableNailsCount;
+            result = Math.max(result, newPossibleCountWithCurrentLength);
 
-            result = Math.max(result, hammeringCount + nailLengthAndCount.getCount());
+            longerNailsCount += nailLengthAndCount.getCount();
         }
 
         return result;
     }
 
-    private TreeSet<NailLengthAndCount> prepareTreeSetByCountDesc(Map<Integer, List<Integer>> mappedByLength) {
-        Comparator<NailLengthAndCount> countComparatorDesc = Comparator.comparing(NailLengthAndCount::getCount).reversed();
-        return prepareTreeSet(mappedByLength, countComparatorDesc);
+    private Map<Integer, Integer> prepareLengthAndCountMapping(int[] nailSizes) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int nailSize : nailSizes) {
+            Integer count = map.getOrDefault(nailSize, 0);
+            map.put(nailSize, ++count);
+        }
+        return map;
     }
 
-    private TreeSet<NailLengthAndCount> prepareTreeSetByLengthDesc(Map<Integer, List<Integer>> mappedByLength) {
+    private List<NailLengthAndCount> sortedByLengthDesc(Map<Integer, Integer> mappedByLength) {
         Comparator<NailLengthAndCount> lengthComparatorDesc = Comparator.comparing(NailLengthAndCount::getLength).reversed();
-        return prepareTreeSet(mappedByLength, lengthComparatorDesc);
-    }
-
-    private TreeSet<NailLengthAndCount> prepareTreeSet(Map<Integer, List<Integer>> mappedByLength, Comparator<NailLengthAndCount> comparator) {
-        TreeSet<NailLengthAndCount> treeSet = new TreeSet<>(comparator);
-        mappedByLength.entrySet()
+        return mappedByLength.entrySet()
                 .stream()
-                .map(entry -> new NailLengthAndCount(entry.getKey(), entry.getValue().size()))
-                .forEach(treeSet::add);
-
-        return treeSet;
+                .map(entry -> new NailLengthAndCount(entry.getKey(), entry.getValue()))
+                .sorted(lengthComparatorDesc)
+                .collect(Collectors.toList());
     }
 
     static class NailLengthAndCount {
